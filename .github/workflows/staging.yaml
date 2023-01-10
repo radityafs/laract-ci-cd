@@ -1,0 +1,78 @@
+name: Staging Pipeline
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  Test_Backend:
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: ./app_backend
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ./app_backend/vendor
+          key: composer-${{ hashFiles('./app_backend/composer.lock') }}
+      - name: "Install Composer Dependency"
+        uses: "php-actions/composer@v6"
+        with:
+          php_version: "8.1"
+          working_dir: ./app_backend
+      - name: "Generate .env file"
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: "Testing Project"
+        run: "php artisan test"
+
+      - name: "Save Test Results"
+        uses: actions/upload-artifact@v3
+        with:
+          name: "backend-test-results"
+          path: ./test-result.log
+
+  Test_Frontend:
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: ./app_frontend
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: ./app_frontend/node_modules
+          key: node-${{ hashFiles('./app_frontend/package-lock.json') }}
+
+      - name: "Install Dependencies"
+        run: "npm install"
+
+      - name: "Testing Project"
+        run: "npm run test"
+      - name: "Save Test Results"
+        uses: actions/upload-artifact@v3
+        with:
+          name: "backend-test-results"
+          path: ./test-result.log
+
+  Deploy:
+    needs: [Test_Backend, Test_Frontend]
+    runs-on: self-hosted
+    steps:
+      - name: Stop Docker Containers
+        run: docker-compose -f docker-compose.staging.yaml down -v --rmi local
+        continue-on-error: true
+
+      - name: Build Docker Containers
+        run: docker-compose -f docker-compose.staging.yaml up -d
