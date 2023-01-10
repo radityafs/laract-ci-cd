@@ -70,6 +70,7 @@ services:
     volumes:
       - frontend-staging:/app/frontend
       - backend-staging:/app/backend
+      - ./config/backend/.env.staging:/app/backend/.env
       - ./config/nginx/nginx.staging.conf:/opt/docker/etc/nginx/conf.d/default.conf
     depends_on:
       - db-staging
