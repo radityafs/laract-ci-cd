@@ -49,7 +49,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: node_modules
-          key: node-${{ hashFiles('./app_frontend/package-lock.json') }}
+          key: node-${{ hashFiles('./app_frontend/package.json') }}
       - name: "Install Dependencies"
         run: "npm install"
       - name: "Testing Project"
