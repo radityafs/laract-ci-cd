@@ -40,7 +40,7 @@ services:
       MYSQL_USER: staging
       MYSQL_PASSWORD: staging123
     volumes:
-      - ./db_staging:/var/lib/mysql
+      - /root/laract-ci-ci/db_staging:/var/lib/mysql
     networks:
       - app-network-staging
 

@@ -14,7 +14,7 @@ services:
       MYSQL_USER: production
       MYSQL_PASSWORD: production123
     volumes:
-      - ./db_prod:/var/lib/mysql
+      - /root/laract-ci-ci/db_prod:/var/lib/mysql
     networks:
       - app-network
 
