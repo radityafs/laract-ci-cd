@@ -6,7 +6,7 @@ on:
       - staging
 
 jobs:
-  Test_Backend:
+  Test_Backend_Staging:
     runs-on: self-hosted
     defaults:
       run:
@@ -38,7 +38,7 @@ jobs:
           name: "backend-test-results"
           path: ./test-result.log
 
-  Test_Frontend:
+  Test_Frontend_Staging:
     runs-on: self-hosted
     defaults:
       run:
@@ -67,7 +67,7 @@ jobs:
           path: ./test-result.log
 
   Deploy:
-    needs: [Test_Backend, Test_Frontend]
+    needs: [Test_Backend_Staging, Test_Frontend_Staging]
     runs-on: self-hosted
     steps:
       - name: Stop Docker Containers
