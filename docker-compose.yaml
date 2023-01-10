@@ -43,7 +43,6 @@ services:
       - db
     volumes:
       - backend:/app/backend
-      - ./config/backend/.env:/app/backend/.env
     networks:
       - app-network
 
@@ -70,6 +69,7 @@ services:
     volumes:
       - frontend:/app/frontend
       - backend:/app/backend
+      - ./config/backend/.env:/app/backend/.env
       - ./config/nginx/nginx.prod.conf:/opt/docker/etc/nginx/conf.d/default.conf
     depends_on:
       - db
